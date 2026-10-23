@@ -3,6 +3,7 @@ package com.rdstack.desafioORM.entities;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -12,8 +13,23 @@ public class Atividade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
+
+    @Column(columnDefinition = "TEXT")
     private String descricao;
     private Double preco;
+
+    @ManyToMany
+    @JoinTable(name = "tb_participantes_atividades" ,
+            joinColumns = @JoinColumn(name = "participantes_id"),
+            inverseJoinColumns = @JoinColumn(name = "atividades_id"))
+    private Set<Participante> participantes = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name ="categoria_id")
+    private Categoria categoria;
+
+    @OneToMany(mappedBy = "atividade")
+    private Set<Bloco> blocos = new HashSet<>();
 
 
     public Atividade(){}
@@ -54,5 +70,18 @@ public class Atividade {
 
     public void setPreco(Double preco) {
         this.preco = preco;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Atividade atividade = (Atividade) o;
+        return Objects.equals(id, atividade.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

@@ -2,6 +2,10 @@ package com.rdstack.desafioORM.entities;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 @Entity
 @Table(name ="tb_participante")
 public class Participante {
@@ -11,6 +15,9 @@ public class Participante {
     private String nome;
     private String email;
 
+    @ManyToMany(mappedBy = "participantes")
+    private Set<Atividade> atividades = new HashSet<>();
+
     public Participante(){}
 
     public Participante(Integer id, String nome, String email) {
@@ -18,7 +25,6 @@ public class Participante {
         this.nome = nome;
         this.email = email;
     }
-
 
     public Integer getId() {
         return id;
@@ -42,5 +48,18 @@ public class Participante {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Participante that = (Participante) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
